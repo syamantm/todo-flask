@@ -31,7 +31,8 @@ def create_task():
         abort(400)
 
     task = Task(title=request.json['title'],
-                description=request.json.get('description', ""))
+                description=request.json.get('description', ""),
+                done=request.json.get('done', False))
 
     db.session.add(task)
     db.session.commit()
@@ -50,9 +51,11 @@ def update_task(task_id):
         abort(400)
     if 'description' in request.json and type(request.json['description']) is not unicode:
         abort(400)
-
+    if 'done' in request.json and type(request.json['done']) is not bool:
+        abort(400)
     task.title = request.json.get('title', task.title)
     task.description = request.json.get('description', task.description)
+    task.done = request.json.get('done', task.done)
     db.session.commit()
     return jsonify(task.serialize())
 
