@@ -41,17 +41,92 @@ class BasicTests(unittest.TestCase):
             content_type='application/json'
         )
 
+    def get_task(self, title_id):
+        return self.app.get(
+            f'/tasks/{title_id}'
+        )
+
+    def get_all_tasks(self):
+        return self.app.get(
+            f'/tasks'
+        )
+
+    def update_task(self, title_id, payload):
+        return self.app.put(
+            f'/tasks/{title_id}',
+            data=json.dumps(payload),
+            content_type='application/json'
+        )
+
+    def delete_task(self, title_id):
+        return self.app.delete(
+            f'/tasks/{title_id}'
+        )
+
     ###############
     #### tests ####
     ###############
 
-    def test_main_page(self):
-        response = self.app.get('/', follow_redirects=True)
-        self.assertEqual(response.status_code, 200)
-
     def test_add_task_is_successful(self):
         response = self.add_task(title="test task", description="test task")
         self.assertEqual(response.status_code, 201)
+
+    def test_get_task_is_successful(self):
+        response = self.add_task(title="test task", description="test task")
+        self.assertEqual(response.status_code, 201)
+        task_id = json.loads(response.data)["id"]
+        task_response = self.get_task(task_id)
+        self.assertEqual(task_response.status_code, 200)
+
+    def test_get_task_handles_unknown_task_id(self):
+        get_response = self.get_task(342342342)
+        self.assertEqual(get_response.status_code, 404)
+
+    def test_get_all_tasks_is_successful(self):
+        r1 = self.add_task(title="test task 1", description="test task")
+        r2 = self.add_task(title="test task 2", description="test task")
+        all_tasks = self.get_all_tasks()
+        self.assertEqual(all_tasks.status_code, 200)
+        self.assertEqual(len(json.loads(all_tasks.data)["tasks"]), 2)
+
+    def test_update_task_updates_title(self):
+        response = self.add_task(title="test task", description="test task")
+        self.assertEqual(response.status_code, 201)
+        task_id = json.loads(response.data)["id"]
+        update_response = self.update_task(task_id, {"title": "updated title"})
+        self.assertEqual(update_response.status_code, 200)
+        self.assertEqual(json.loads(update_response.data)["title"], "updated title")
+
+    def test_update_task_updates_description(self):
+        response = self.add_task(title="test task", description="test task")
+        self.assertEqual(response.status_code, 201)
+        task_id = json.loads(response.data)["id"]
+        update_response = self.update_task(task_id, {"description": "updated description"})
+        self.assertEqual(update_response.status_code, 200)
+        self.assertEqual(json.loads(update_response.data)["description"], "updated description")
+
+    def test_update_task_updates_done(self):
+        response = self.add_task(title="test task", description="test task")
+        self.assertEqual(response.status_code, 201)
+        task_id = json.loads(response.data)["id"]
+        update_response = self.update_task(task_id, {"done": True})
+        self.assertEqual(update_response.status_code, 200)
+        self.assertEqual(json.loads(update_response.data)["done"], True)
+
+    def test_update_task_handles_unknown_task_id(self):
+        update_response = self.update_task(342342342, {"done": True})
+        self.assertEqual(update_response.status_code, 404)
+
+    def test_delete_task_is_successful(self):
+        response = self.add_task(title="test task", description="test task")
+        self.assertEqual(response.status_code, 201)
+        task_id = json.loads(response.data)["id"]
+        delete_response = self.delete_task(task_id)
+        self.assertEqual(delete_response.status_code, 200)
+
+    def test_delete_task_handles_unknown_task_id(self):
+        delete_response = self.delete_task(342342342)
+        self.assertEqual(delete_response.status_code, 404)
 
 
 if __name__ == "__main__":
