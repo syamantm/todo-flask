@@ -1,8 +1,10 @@
 ## TODO app in flask using Flask-SQLAlchemy
 [![Build Status](https://travis-ci.com/syamantm/todo-flask.svg?branch=master)](https://travis-ci.com/syamantm/todo-flask)
-![Codecov](https://img.shields.io/codecov/c/github/syamantm/todo-flask)
+[![Codecov](https://img.shields.io/codecov/c/github/syamantm/todo-flask)](https://codecov.io/gh/syamantm/todo-flask)
 
-## Setup flask environment
+## Setup
+
+### Setup flask environment
 ```bash
 python -m venv env
 source env/bin/activate
@@ -25,7 +27,7 @@ docker run --name some-postgres -e POSTGRES_PASSWORD=postgres -p 5433:5432 -d po
 flask db upgrade
 ```
 
-### Start server
+## Start server
 
 ```bash
 flask run

@@ -4,12 +4,6 @@ from app import db
 from app.models import Task
 
 
-@app.route('/')
-@app.route('/index')
-def index():
-    return "Hello, World!"
-
-
 @app.route('/tasks', methods=['GET'])
 def get_tasks():
     all_tasks = Task.query.all()
@@ -47,9 +41,9 @@ def update_task(task_id):
 
     if not request.json:
         abort(400)
-    if 'title' in request.json and type(request.json['title']) != unicode:
+    if 'title' in request.json and type(request.json['title']) != str:
         abort(400)
-    if 'description' in request.json and type(request.json['description']) is not unicode:
+    if 'description' in request.json and type(request.json['description']) is not str:
         abort(400)
     if 'done' in request.json and type(request.json['done']) is not bool:
         abort(400)

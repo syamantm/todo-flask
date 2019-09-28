@@ -1,5 +1,9 @@
 .idea
 env/
 *.db
-__pycache__
 .coverage
+### Python ###
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
