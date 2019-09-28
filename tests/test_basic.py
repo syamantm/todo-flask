@@ -41,9 +41,9 @@ class BasicTests(unittest.TestCase):
             content_type='application/json'
         )
 
-    def get_task(self, title_id):
+    def get_task(self, task_id):
         return self.app.get(
-            f'/tasks/{title_id}'
+            f'/tasks/{task_id}'
         )
 
     def get_all_tasks(self):
@@ -51,16 +51,16 @@ class BasicTests(unittest.TestCase):
             f'/tasks'
         )
 
-    def update_task(self, title_id, payload):
+    def update_task(self, task_id, payload):
         return self.app.put(
-            f'/tasks/{title_id}',
+            f'/tasks/{task_id}',
             data=json.dumps(payload),
             content_type='application/json'
         )
 
-    def delete_task(self, title_id):
+    def delete_task(self, task_id):
         return self.app.delete(
-            f'/tasks/{title_id}'
+            f'/tasks/{task_id}'
         )
 
     ###############
@@ -70,6 +70,13 @@ class BasicTests(unittest.TestCase):
     def test_add_task_is_successful(self):
         response = self.add_task(title="test task", description="test task")
         self.assertEqual(response.status_code, 201)
+
+    def test_add_task_rejects_non_json_payload(self):
+        response = self.app.post(
+            '/tasks',
+            data="a non json payload"
+        )
+        self.assertEqual(response.status_code, 400)
 
     def test_get_task_is_successful(self):
         response = self.add_task(title="test task", description="test task")
@@ -116,6 +123,23 @@ class BasicTests(unittest.TestCase):
     def test_update_task_handles_unknown_task_id(self):
         update_response = self.update_task(342342342, {"done": True})
         self.assertEqual(update_response.status_code, 404)
+
+    def test_update_task_handles_non_json_payload(self):
+        response = self.add_task(title="test task", description="test task")
+        self.assertEqual(response.status_code, 201)
+        task_id = json.loads(response.data)["id"]
+        update_response = self.app.put(
+            f'/tasks/{task_id}',
+            data="a non json payload"
+        )
+        self.assertEqual(update_response.status_code, 400)
+
+    def test_update_task_rejects_done_with_non_boolean_value(self):
+        response = self.add_task(title="test task", description="test task")
+        self.assertEqual(response.status_code, 201)
+        task_id = json.loads(response.data)["id"]
+        update_response = self.update_task(task_id, {"done": "true"})
+        self.assertEqual(update_response.status_code, 400)
 
     def test_delete_task_is_successful(self):
         response = self.add_task(title="test task", description="test task")
