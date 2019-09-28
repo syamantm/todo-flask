@@ -1,4 +1,5 @@
-## Instructions
+## TODO app in flask using Flask-SQLAlchemy
+[![Build Status](https://travis-ci.com/syamantm/todo-flask.svg?branch=master)](https://travis-ci.com/syamantm/todo-flask)
 
 ## Setup flask environment
 ```bash
