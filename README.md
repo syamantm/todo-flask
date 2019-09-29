@@ -1,6 +1,6 @@
 ## TODO app in flask using Flask-SQLAlchemy
 [![Build Status](https://travis-ci.com/syamantm/todo-flask.svg?branch=master)](https://travis-ci.com/syamantm/todo-flask)
-[![Codecov](https://img.shields.io/codecov/c/github/syamantm/todo-flask)](https://codecov.io/gh/syamantm/todo-flask)
+[![codecov](https://codecov.io/gh/syamantm/todo-flask/branch/master/graph/badge.svg)](https://codecov.io/gh/syamantm/todo-flask)
 
 ## Setup
 
