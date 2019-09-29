@@ -20,7 +20,7 @@ class BasicTests(unittest.TestCase):
         app.config['DEBUG'] = False
         app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
                                                 os.path.join(basedir, TEST_DB)
-        self.app = app.test_client()
+        self.client = app.test_client()
         db.drop_all()
         db.create_all()
 
@@ -35,31 +35,31 @@ class BasicTests(unittest.TestCase):
     ########################
 
     def add_task(self, title, description):
-        return self.app.post(
+        return self.client.post(
             '/tasks',
             data=json.dumps(dict(title=title, description=description)),
             content_type='application/json'
         )
 
     def get_task(self, task_id):
-        return self.app.get(
+        return self.client.get(
             f'/tasks/{task_id}'
         )
 
     def get_all_tasks(self):
-        return self.app.get(
+        return self.client.get(
             f'/tasks'
         )
 
     def update_task(self, task_id, payload):
-        return self.app.put(
+        return self.client.put(
             f'/tasks/{task_id}',
             data=json.dumps(payload),
             content_type='application/json'
         )
 
     def delete_task(self, task_id):
-        return self.app.delete(
+        return self.client.delete(
             f'/tasks/{task_id}'
         )
 
@@ -72,7 +72,7 @@ class BasicTests(unittest.TestCase):
         self.assertEqual(response.status_code, 201)
 
     def test_add_task_rejects_non_json_payload(self):
-        response = self.app.post(
+        response = self.client.post(
             '/tasks',
             data="a non json payload"
         )
@@ -128,7 +128,7 @@ class BasicTests(unittest.TestCase):
         response = self.add_task(title="test task", description="test task")
         self.assertEqual(response.status_code, 201)
         task_id = json.loads(response.data)["id"]
-        update_response = self.app.put(
+        update_response = self.client.put(
             f'/tasks/{task_id}',
             data="a non json payload"
         )
